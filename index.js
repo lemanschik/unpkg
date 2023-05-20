@@ -1,4 +1,4 @@
-import { output, channel as input } from './registry/router.js';
+import { output, channel as input } from './awesome-os.js';
 output().pipeTo(new WritableStream({write(output){ console.log(output) }}))
 const document = `<!DOCTYPE html>
 <html lang="en-GB">
