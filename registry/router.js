@@ -156,12 +156,12 @@ body * {
 (caches.match(new Request(`${scope}/index.html`)) || 
  caches.match(new Request(`${scope}/`))) || 
  caches.open(scope).then(cache => [
-   cache.put(new Request(`${scope}/index.html`),new Response({ body: document })),
+   cache.put(new Request(`${scope}/index.html`),new Response({ body: new Blob([document], { type: 'text/html' }) })),
    cache.put(new Request(scope),new Response({ body: document }))
 ]);
 
 serviceWorker.onfetch = (event) => event.waitUntil(caches.match(event.request) || cahes.match(event.request,{ignoreSearch:true})||fetch(event.request).then(
-  r=>`${r.status}`.startsWith('2') ? r : new Response({ status: 404, body: `Request: ${event.request.url} Not Found.` }) ));
+  r=>`${r.status}`.startsWith('2') ? r : new Response({ status: 404, body: new Blob([`Request: ${event.request.url} Not Found.`], { type: 'text/html' }) }) ));
 /** The Fundamental Concepts */
 /**
  * You get a Boot Stream that emits a HigerOrder ComponentManager which can pass down Capabilitys.
