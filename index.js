@@ -40,8 +40,8 @@ body * {
 caches.open(new URL('./',import.meta.url)).then(cache => cache.addAll(['index.html','index.js']));
 
 caches.open(new URL('./',import.meta.url)).then(cache => 
-(cache.match(new Request(`registry/index.html`)) || 
- cache.match(new Request(`registry/`))) || [
-   cache.put(new Request(`registry/index.html`),new Response({ body: new Blob([document], { type: 'text/html' }) })),
-   cache.put(new Request(`registry/`),new Response({ body: new Blob([document], { type: 'text/html' }) }))
+(cache.match(new Request(`./index.html`)) || 
+ cache.match(new Request(`./`))) || [
+   cache.put(new Request(`./index.html`),new Response({ body: new Blob([document], { type: 'text/html' }) })),
+   cache.put(new Request(`./`),new Response({ body: new Blob([document], { type: 'text/html' }) }))
 ]).catch(console.error);
