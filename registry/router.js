@@ -66,7 +66,7 @@ Object.assign(ComponentManager,{ async boot(c) {
 
 }}) && new ReadableStream({
   start: (c) => ComponentManager.boot(c),
-})).pipeThrough(new TransformStream({ 
+}).pipeThrough(new TransformStream({ 
     // FIFO Main System.
     transform: (ComponentManager,c)=>{
       console.log(ComponentManager);
