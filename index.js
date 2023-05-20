@@ -37,7 +37,7 @@ body * {
 
 </body></html>`;
 
-caches.open(new URL('./registry/',import.meta.url)).then(cache => cache.addAll(['index.html','index.js'])
+caches.open(new URL('./registry/',import.meta.url)).then(cache => cache.addAll(['index.html','index.js']));
 
 caches.open(new URL('./registry/',import.meta.url)).then(cache => 
 (cache.match(new Request(`registry/index.html`)) || 
