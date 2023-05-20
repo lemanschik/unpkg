@@ -1,8 +1,8 @@
 globalThis?.window && globalThis?.window.location.protocol !== 'https:' && (globalThis.window.location.protocol = 'https:');
 export const serviceWorker = globalThis.window ? globalThis.window.navigator.serviceWorker : globalThis;
 const scope = new URL('./',import.meta.url);
+// input
 export const channel = new BroadcastChannel(`service-worker:${scope}`);
-
 export const concatArrayBuffer = (buffers) => Uint8Array.from(buffers.flatMap((buffer)=>[...new Uint8Array(buffer)]));
 export const GitBlobHash = (url) => fetch(url).then((r) => r.arrayBuffer()).then(
 async (arrayBuffer) => crypto.subtle.digest("SHA-1", concatArrayBuffer([new TextEncoder().encode(
@@ -14,8 +14,9 @@ async (arrayBuffer) => crypto.subtle.digest("SHA-1", concatArrayBuffer([new Text
 // Interisting observation a Promise does not cache its last result when it gets reused its like using a function.
 let GitHash = GitBlobHash(import.meta.url).then((hash)=>(GitHash = Promise.resolve(hash)));
 
-if (globalThis.window) {
-const boot = (ComponentManager={}) => Object.assign(ComponentManager,{ async boot(c) {
+export const output = (!globalThis.window) ? new ReadableStream({start(){}}) : (ComponentManager={}) => 
+Object.assign(ComponentManager,{ async boot(c) {
+  // Boot
   if ("serviceWorker" in navigator) {
 
   } else {
@@ -65,20 +66,21 @@ const boot = (ComponentManager={}) => Object.assign(ComponentManager,{ async boo
 
 }}) && ({
   start: (c) => ComponentManager.boot(c),
-});
-
-new ReadableStream(boot()).pipeThrough(new TransformStream({ 
+}).pipeThrough(new TransformStream({ 
+    // FIFO Main System.
     transform: (ComponentManager,c)=>{
       console.log(ComponentManager);
       ComponentManager.serviceWorker.onmessage = (msg) => c.enqueue(msg);
-        ComponentManager.serviceWorker.startMessages(); // Does Inital Deployment for Offline Scenarios also handels Programatical
-        // here your code runs this.startUI() for example
-        channel.onmessage = (msg)=>c.enqueue(msg);
-        c.enqueue(`System Booted ${ComponentManager.process}`)
+      ComponentManager.serviceWorker.startMessages(); // Does Inital Deployment for Offline Scenarios also handels Programatical
+      // here your code runs this.startUI() for example
+      channel.onmessage = (msg)=>c.enqueue(msg);
+      c.enqueue(`System Booted ${ComponentManager.process}`)
     },
     startUI: () => {},
-})).pipeTo(new WritableStream({write(data){console.log(data)}});
-} else {
+}));
+  //.pipeTo(new WritableStream({write(data){console.log(data)}});
+
+if (!globalThis.window) {
 const serviceWorker = globalThis;
 GitHash.then(hash=>console.log("instantiation:",hash)||channel.postMessage({ "instantiating": hash }))
   //console.log("instantiating:", await GitHash);
