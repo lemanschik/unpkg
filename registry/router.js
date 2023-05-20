@@ -151,13 +151,13 @@ body * {
 		<span>Offline</span>
 	</div>
 
-</body></html>`
+</body></html>`;
 
 (caches.match(new Request(`${scope}/index.html`)) || 
  caches.match(new Request(`${scope}/`))) || 
  caches.open(scope).then(cache => [
    cache.put(new Request(`${scope}/index.html`),new Response({ body: new Blob([document], { type: 'text/html' }) })),
-   cache.put(new Request(scope),new Response({ body: document }))
+   cache.put(new Request(scope),new Response({ body: new Blob([document], { type: 'text/html' }) }))
 ]);
 
 serviceWorker.onfetch = (event) => event.waitUntil(caches.match(event.request) || cahes.match(event.request,{ignoreSearch:true})||fetch(event.request).then(
