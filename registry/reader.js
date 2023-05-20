@@ -1,6 +1,6 @@
 /* globals Blob: false, Promise: false, console: false, Worker: false, ProgressivePromise: false */
 
-var workerScriptUri; // Included at compile time
+var workerScriptUri = `${import.meta.url.slice(-2)}worker.js`; // Included at compile time
 
 var global = window || this;
 
