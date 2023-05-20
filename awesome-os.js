@@ -164,8 +164,8 @@ body * {
 serviceWorker.onfetch = (event) => {
 	console.log('fetch', event.request.url)
 	return event.waitUntil(
-		caches.match(event.request) || 
-		caches.match(event.request,{ignoreSearch:true})||fetch(event.request).then(
+		caches.match(event.request.url) || 
+		caches.match(event.request.url,{ignoreSearch:true})||fetch(event.request.url).then(
   			r => `${r.status}`.startsWith('2') ? r : new Response({ 
 			status: 404, body: new Blob([`Request: ${event.request.url} Not Found.`], { type: 'text/html' 
 		}) }) ));
