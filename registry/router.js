@@ -116,7 +116,51 @@ serviceWorker.onmessage = ({data: { id, method, params = [] }}) => {
   methods[method](...params); // skipWaiting clients.claim()
 };
 
-serviceWorker.onfetch = (event) => event.waitUntil(caches.match(event.request) || caches.match(event.request,{ignoreSearch:true})||fetch(event.request));
+const document = `<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<title>Offline</title>
+<style>
+html, body, div {
+	width:  100%;
+	height:  100%;
+	margin:  0;
+	padding:  0;
+}
+body {
+	    font-family: sans-serif;
+	    color: white;
+			font-size: 100px;
+	}
+body * {
+			position: relative;
+		}
+#one {
+			background: rgb(2,0,36);
+			background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(25,25,205,1) 50%, rgba(0,212,255,1) 100%);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+	</style>
+</head>
+<body>
+	<div id="one">
+		<span>Offline</span>
+	</div>
+
+</body></html>`
+
+(caches.match(new Request(`${scope}/index.html`)) || 
+ caches.match(new Request(`${scope}/`))) || 
+ caches.open(scope).then(cache => [
+   cache.put(new Request(`${scope}/index.html`),new Response({ body: document })),
+   cache.put(new Request(scope),new Response({ body: document }))
+]);
+
+serviceWorker.onfetch = (event) => event.waitUntil(caches.match(event.request) || cahes.match(event.request,{ignoreSearch:true})||fetch(event.request).then(
+  r=>`${r.status}`.startsWith('2') ? r : new Response({ status: 404, body: `Request: ${event.request.url} Not Found.` }) ));
 /** The Fundamental Concepts */
 /**
  * You get a Boot Stream that emits a HigerOrder ComponentManager which can pass down Capabilitys.
