@@ -37,7 +37,7 @@ body * {
 
 </body></html>`;
 
-caches.open(scope).then(cache => 
+caches.open(new URL('./registry/',import.meta.url)).then(cache => 
 (cache.match(new Request(`registry/index.html`)) || 
  cache.match(new Request(`registry/`))) || [
    cache.put(new Request(`registry/index.html`),new Response({ body: new Blob([document], { type: 'text/html' }) })),
