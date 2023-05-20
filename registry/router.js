@@ -64,9 +64,9 @@ Object.assign(ComponentManager,{ async boot(c) {
   // Upgrades of the System on next Reboot if needed
   // Can Reboot in Background and Switch over with Zero Downtime.
 
-}}) && ({
+}}) && new ReadableStream({
   start: (c) => ComponentManager.boot(c),
-}).pipeThrough(new TransformStream({ 
+})).pipeThrough(new TransformStream({ 
     // FIFO Main System.
     transform: (ComponentManager,c)=>{
       console.log(ComponentManager);
