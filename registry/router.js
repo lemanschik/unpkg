@@ -38,8 +38,8 @@ Object.assign(ComponentManager,{ async boot(c) {
   await ComponentManager.serviceWorker.register(import.meta.url,
   { type: 'module', updateViaCache: 'all', scope}).then((reg) => {
     // serviceWorker.state 
-    document.querySelector("#service-worker")?.textContent = `${['installing','active','waiting'].find(
-    status=>reg[status])} and is controller: ${serviceWorker.active === serviceWorker.controller}`;
+    document.querySelector("#service-worker") && (document.querySelector("#service-worker").textContent = `${['installing','active','waiting'].find(
+    status=>reg[status])} and is controller: ${serviceWorker.active === serviceWorker.controller}`);
     
     serviceWorker.addEventListener("statechange", (e) => {
       // logState(e.target.state);
