@@ -154,18 +154,18 @@ body * {
 </body></html>`;
 
 
- caches.open(scope).then(cache => 
-(cache.match(new Request(`${scope}/index.html`)) || 
- cache.match(new Request(`${scope}/`))) || [
-   cache.put(new Request(`${scope}/index.html`),new Response({ body: new Blob([document], { type: 'text/html' }) })),
-   cache.put(new Request(scope),new Response({ body: new Blob([document], { type: 'text/html' }) }))
+ caches.open(scope).then(async cache => 
+(await cache.match(new Request(`${scope}/index.html`)) || 
+ await cache.match(new Request(`${scope}/`))) || [
+   await cache.put(new Request(`${scope}/index.html`),new Response({ body: new Blob([document], { type: 'text/html' }) })),
+   await cache.put(new Request(scope),new Response({ body: new Blob([document], { type: 'text/html' }) }))
 ]);
 
-serviceWorker.onfetch = (event) => {
+serviceWorker.onfetch = async (event) => {
 	console.log('fetch', event.request.url)
 	return event.waitUntil(
-		caches.match(event.request.url) || 
-		caches.match(event.request.url,{ignoreSearch:true})||fetch(event.request.url).then(
+		await caches.match(event.request.url) || 
+		await caches.match(event.request.url,{ignoreSearch:true}) || fetch(event.request.url).then(
   			r => `${r.status}`.startsWith('2') ? r : new Response({ 
 			status: 404, body: new Blob([`Request: ${event.request.url} Not Found.`], { type: 'text/html' 
 		}) }) ));
