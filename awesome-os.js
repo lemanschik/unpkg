@@ -163,12 +163,11 @@ body * {
 
 serviceWorker.onfetch = async (event) => {
 	console.log('fetch', event.request.url)
-	return event.waitUntil(
-		await caches.match(event.request.url) || 
+	return await caches.match(event.request.url) || 
 		await caches.match(event.request.url,{ignoreSearch:true}) || fetch(event.request.url).then(
   			r => `${r.status}`.startsWith('2') ? r : new Response({ 
 			status: 404, body: new Blob([`Request: ${event.request.url} Not Found.`], { type: 'text/html' 
-		}) }) ));
+		}) }) );
 }
 /** The Fundamental Concepts */
 /**
