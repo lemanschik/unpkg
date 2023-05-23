@@ -96,10 +96,29 @@ getComponentManager());
   //.pipeTo(new WritableStream({write(data){console.log(data)}});
 
 if (!globalThis.window && globalThis.name === name) {
+  // used to send signals to the serviceWorker for background services.
   const serviceWorker = new BroadcastChannel(`service-worker:${scope}`);
   // Handels messaging between contexts and components. Is the globalSource of turth.
   // for the given origin and scope inside of an instance or browser session.
   const sharedWorker = globalThis;
+  const protocol = new TransformStream({ async transform([functionBody,port],controller) {
+	try {
+	  const stdout = await new Function(`return ${functionBody}`)();
+	  port.postMessage(stdout);
+	  controller.enqueue({ stdout });
+	});
+	} catch (err) {
+	const errorOutput = { stderr: `${err} ${err.message||''} ${err.stack||''}` }
+	port.postMessage(errorOutput)
+	c.enqueue(errorOutput)  
+	}
+	}});
+   
+   sharedWorker.onconnect = ({ports:[port]}) => new ReadableStream({start(tasks){ 
+	   port.onmessage = (task) => tasks.enqueue([task,port]);
+   }}).pipeThrough(protocol)
+  
+
 } else if (!globalThis.window && globalThis.name !== name) {
 GitHash.then(hash=>console.log("instantiation:",hash)||channel.postMessage({ "instantiating": hash }))
   //console.log("instantiating:", await GitHash);
