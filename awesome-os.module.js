@@ -1,3 +1,38 @@
+/** @markdown {} ${import.meta.url}.md
+# AwesomeOS - Prototype Deployment. v24
+The Concepts This module exports conditional for all 3 main Instances
+of the Application to keep it simple we will refer to instances as World
+or Context and mix interchange the terms to make you familar with them
+as Mozilla calls the Context World and it makes some sense in some brains. 
+You judge what you like more.
+
+## World / Context List
+
+### Render Context 
+The first that you see when you open the origin the first time
+The secund that runs right after the origin Manager
+
+This is the only context that is able to init a connection to the nativ host 
+This is by design so it is always required to run visual with user interaction.
+The host system is not modify able how ever you can bypass that via running this 
+inside a headless instance. 
+
+### Origin Manager / Service Worker Context Scope
+The Secund that runs when you visit the origin the first time but
+the first that runs in offline scenarios or on secund visit or after install
+you get it.
+
+### globalScope for the origin inside sharedWorker
+The 3th and last context is a sharedWorker GlobalScope that gets used by both a prev
+Scopes / Contexts Worlds.
+
+It acts as unified endpoint system bus. And is able to use sharedArray Buffers to use data 
+in multiple Contexts at the same time as also many other shared apis that work in a own context it self.
+
+audio worklets are a great example for that. 
+
+*/
+
 // This implements a sharedSync Context that can be used with async methods 
 const location = globalThis.location || globalThis?.window.location;
 location && (location.protocol !== 'https:' 
